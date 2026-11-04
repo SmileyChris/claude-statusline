@@ -7,7 +7,7 @@ A one-line status line for [Claude Code](https://code.claude.com) that shows wha
 Without a [Nerd Font](https://www.nerdfonts.com) it uses plain icons:
 
 ```
-pixlings ⎇ main+8 41% Opus 5.5 ◕97% 62%→109%↺2h09 20%⟲3d
+synthesis ⎇ main 7% Opus 5.5 ◕98% 14%→40%↺3h19 8%⟲6d
 ```
 
 One bash script. It needs `jq` (and `git` for the branch), runs in about 13 ms, and works on bash 3.2 (the one macOS ships) and later.
