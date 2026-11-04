@@ -72,6 +72,21 @@ for m in $(seq 40 -1 1); do echo "$((now - m * 60)) 7 $((now + 12600)) 7 $((now 
 run "$(session null "$(limits 12 12600 7 500000)")" >/dev/null
 check "a newer reading is logged at once" "12" "$(tail -n1 "$tmp/rt/claude-statusline-limits" | cut -d' ' -f2)"
 
+# Weekly colour comes from the average since the week opened (reset - 7d), not the log.
+week() { run "$(session null "$(limits 1 7800 "$1" "$2")")"; }
+fresh
+contains "7d on course for 86% is plain"  $'\033[38;5;245m21%'  "$(week 21 458320)"
+fresh
+contains "7d on course for 99% is orange" $'\033[38;5;214m50%'  "$(week 50 300000)"
+fresh
+contains "7d on course for 115% is orange" $'\033[38;5;214m58%'  "$(week 58 300000)"
+fresh
+contains "7d on course for 138% is red"   $'\033[38;5;196m70%'  "$(week 70 300000)"
+fresh
+contains "7d under 24h in is plain"       $'\033[38;5;245m30%'  "$(week 30 561600)"
+fresh
+contains "7d under 10% used is plain"     $'\033[38;5;245m9%'   "$(week 9 590000)"
+
 # --- git
 mkdir -p "$tmp/repo" && git -C "$tmp/repo" init -q -b main && touch "$tmp/repo/a" "$tmp/repo/b"
 repo_json=$(printf '{"workspace":{"current_dir":"%s"},"model":{"display_name":"Opus"}}' "$tmp/repo")

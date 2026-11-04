@@ -121,15 +121,20 @@ fi
 #  - An idle session keeps the limits from its last reply, but usage only rises within a
 #    window, so each session shows the highest reading logged for the same window (same
 #    reset time, give or take two minutes).
-#  - Projections use the recent rate: the change since the oldest reading in the lookback.
-#      5h: lookback 60m, needs 20m of readings and 10% used
-#      7d: lookback 24h, needs 6h of readings and 10% used (colour only)
-#    Plain under 90% projected, orange to 110%, red beyond; plain with no projection.
+#  - The 5h projection uses the recent rate: the change since the oldest reading in the
+#    last 60m; it needs 20m of readings and 10% used.
+#  - The 7d projection uses the average since the week opened (reset - 7d); it needs 24h of
+#    the week gone and 10% used, and sets the colour only.
+#    Plain under 90% projected, orange to 120%, red beyond; plain with no projection.
 log="$rt/claude-statusline-limits"
 if [ "$u5" != - ] || [ "$u7" != - ]; then
   : >> "$log"
   read -r u5 p5 u7 p7 last lines newer < <(awk -v now="$now" -v u5="$u5" -v r5="$r5" -v u7="$u7" -v r7="$r7" '
     function near(a, b) { return a - b < 120 && b - a < 120 }
+    function week(u, r,   gone) {
+      gone = now - (r - 604800)
+      return gone < 86400 || u < 10 ? -1 : int(u * 604800 / gone)
+    }
     function proj(u, t0, u0, r, span,   rate) {
       if (t0 == "" || now - t0 < span || u < 10) return -1
       rate = (u - u0) / (now - t0); if (rate < 0) rate = 0
@@ -145,13 +150,12 @@ if [ "$u5" != - ] || [ "$u7" != - ]; then
     u7 != "-" && $4 != "-" && near($5, r7) {
       if ($4 + 0 > m7) m7 = $4 + 0
       if ($4 + 0 > l7) l7 = $4 + 0
-      if ($1 >= now - 86400 && t7 == "") { t7 = $1; v7 = $4 }
     }
     END {
       # newer: this session knows a higher reading than the log holds for the window.
       newer = (u5 != "-" && u5 + 0 > l5) || (u7 != "-" && u7 + 0 > l7)
       print (u5 == "-" ? "-" : m5), (u5 == "-" ? -1 : proj(m5, t5, v5, r5, 1200)),
-            (u7 == "-" ? "-" : m7), (u7 == "-" ? -1 : proj(m7, t7, v7, r7, 21600)),
+            (u7 == "-" ? "-" : m7), (u7 == "-" ? -1 : week(m7, r7)),
             last + 0, n + 0, newer
     }' "$log")
   # Log once a minute, or straight away when this session has a newer reading. Without
@@ -164,7 +168,7 @@ if [ "$u5" != - ] || [ "$u7" != - ]; then
   fi
 fi
 
-pace() { if (( $1 > 110 )); then col=$BAD; elif (( $1 >= 90 )); then col=$WARN; else col=$TEXT; fi; }
+pace() { if (( $1 > 120 )); then col=$BAD; elif (( $1 >= 90 )); then col=$WARN; else col=$TEXT; fi; }
 
 if [ "$u5" != - ] && (( r5 > now )); then
   u=${u5%.*}; left=$(( r5 - now ))

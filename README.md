@@ -43,14 +43,14 @@ Each message re-reads your conversation from Anthropic's prompt cache at a fract
 
 Only on a claude.ai subscription; with an API key this part doesn't appear.
 
-The projection is from your **recent** rate, not the average since the window opened, so a busy first half hour or a long lunch doesn't skew it. It appears only once there is enough to go on:
+The 5-hour projection is from your **recent** rate (the last 60 minutes), not the average since the window opened, so a busy first half hour or a long lunch doesn't skew it. The weekly one is the opposite: the average since the week opened, so a heavy day doesn't paint the rest of the week red. Each appears only once there is enough to go on:
 
-| | Looks back | Shows a projection once there are | and you've used |
+| | Rate from | Shows a projection once there are | and you've used |
 |---|---|---|---|
-| 5-hour | 60 minutes | 20 minutes of readings | 10% |
-| Weekly | 24 hours | 6 hours of readings | 10% (as the colour only) |
+| 5-hour | the last 60 minutes | 20 minutes of readings | 10% |
+| Weekly | the week so far | 24 hours of the week gone | 10% (as the colour only) |
 
-The numbers turn orange when you're on course for 90–110% by the reset, red beyond that.
+The numbers turn orange when you're on course for 90–120% by the reset, red beyond that.
 
 The limits are shared across your account, so all your Claude Code windows share one log of readings. An idle window would otherwise keep showing the figure from its last reply; this way every window shows the newest one. Context and cache are per session, so those differ between windows, as they should.
 
