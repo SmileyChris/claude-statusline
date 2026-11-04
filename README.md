@@ -2,11 +2,13 @@
 
 A one-line status line for [Claude Code](https://code.claude.com) that shows what Claude Code knows but doesn't show you: how long your prompt cache stays warm, and whether you'll run out of your usage limit before it resets.
 
+![The status line in a dark terminal with a Nerd Font: folder, branch, context, model, a cache hourglass at 98%, the 5-hour limit at 14% heading for 40% with 3h19 to go, and the weekly limit at 8% with 6 days to go](docs/statusline.png)
+
+Without a [Nerd Font](https://www.nerdfonts.com) it uses plain icons:
+
 ```
 pixlings ⎇ main+8 41% Opus 5.5 ◕97% 62%→109%↺2h09 20%⟲3d
 ```
-
-(Shown with the plain icons; with a [Nerd Font](https://www.nerdfonts.com) you get folder, branch, chip, hourglass, clock and calendar glyphs.)
 
 One bash script. It needs `jq` (and `git` for the branch), runs in about 13 ms, and works on bash 3.2 (the one macOS ships) and later.
 
