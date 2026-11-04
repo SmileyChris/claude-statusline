@@ -12,6 +12,8 @@ synthesis ⎇ main 7% Opus 5.5 ◕98% 14%→40%↺3h19 8%⟲6d
 
 One bash script. It needs `jq` (and `git` for the branch), runs in about 13 ms, and works on bash 3.2 (the one macOS ships) and later.
 
+It isn't a plugin. It uses Claude Code's own `statusLine` setting, which runs a command and shows what it prints. There is no package or background process to install, and nothing hooks into your sessions. Claude Code already passes it the cache and limit numbers, so everything above comes from about 150 lines you can read before you run them. Remove the `statusLine` entry from `settings.json` and it's gone.
+
 ## What it shows
 
 | Piece | Example | Meaning |
